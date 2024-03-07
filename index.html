@@ -310,6 +310,8 @@
 
                     <button onclick="copyCpeople()">Kopiuj kod Cpeople C++ do schowka</button>
 
+                    <button onclick="copyTermin()">Kopiuj kod Termin do schowka</button>
+
                 </div>
             </div>
         </div>
@@ -578,6 +580,105 @@ int main() {
                     alert("Wystąpił błąd podczas kopiowania kodu.");
                 });
         }
+
+        function copyTermin() {
+            const code = `
+            #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <windows.h>
+
+class my_coord {
+public:
+    double* cr;
+    my_coord(double x = 0, double y = 0) {
+        cr = new double[2];
+        cr[0] = x;
+        cr[1] = y;
+    }
+    my_coord(const my_coord& other) { // Konstruktor kopiujący
+        cr = new double[2];
+        cr[0] = other.cr[0];
+        cr[1] = other.cr[1];
+    }
+    ~my_coord() {
+        delete[] cr;
+    }
+    my_coord& operator=(const my_coord& other) {
+        if (this != &other) {
+            cr[0] = other.cr[0];
+            cr[1] = other.cr[1];
+        }
+        return *this;
+    }
+};
+
+class my_color {
+public:
+    COLORREF colorref;
+    my_color(COLORREF color = RGB(0, 0, 0)) : colorref(color) {}
+};
+
+class my_point : public my_color, public my_coord {
+public:
+    my_point(double x = 0, double y = 0, COLORREF color = RGB(0, 0, 0)) : my_coord(x, y), my_color(color) {}
+
+    double norm() const {
+        return sqrt(cr[0] * cr[0] + cr[1] * cr[1]);
+    }
+};
+
+template <typename T>
+void PrintFunc(const T& ob, const char* title) {
+    std::cout << title << std::endl;
+    for (const auto& elem : ob) {
+        std::cout << "Point (" << elem.cr[0] << ", " << elem.cr[1] << "), Color: " << elem.colorref << ", Norm: " << elem.norm() << std::endl;
+    }
+}
+
+
+int main() {
+    std::vector<my_point> vect;
+    my_point tab[] = { my_point(2, 4, RGB(0, 0, 0)), my_point(-3, 7, RGB(255, 0, 12)),
+    my_point(4, 2, RGB(120, 120, 0)), my_point(-6, 4, RGB(0, 0, 0)) };
+    const size_t no_it = sizeof(tab) / sizeof(tab[0]);
+
+    // Dodanie elementów z tab do vect
+    vect.insert(vect.end(), std::begin(tab), std::end(tab));
+
+    // Wyświetlenie elementów przed sortowaniem
+    PrintFunc(vect, "creation");
+
+    // Sortowanie elementów wektora
+    std::sort(vect.begin(), vect.end(), [](const my_point& a, const my_point& b) {
+        return a.norm() < b.norm();
+        });
+
+    // Wyświetlenie po sortowaniu
+    PrintFunc(vect, "after sorting");
+
+    // Usuwanie duplikatów
+    vect.erase(std::unique(vect.begin(), vect.end(), [](const my_point& a, const my_point& b) {
+        return a.norm() == b.norm();
+        }), vect.end());
+
+    // Wyświetlenie po usunięciu duplikatów
+    PrintFunc(vect, "after erasing");
+
+    vect.clear();
+    return 0;
+}
+            `
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    alert("Kod został skopiowany do schowka.");
+                })
+                .catch(err => {
+                    console.error('Błąd podczas kopiowania: ', err);
+                    alert("Wystąpił błąd podczas kopiowania kodu.");
+                });
+        } 
     </script>
 </body>
 
